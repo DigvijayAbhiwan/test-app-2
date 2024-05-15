@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   useNavigate,
   useLocation,
@@ -7,7 +7,6 @@ import {
   Link,
 } from "react-router-dom";
 import { PARENT_ORIGIN } from "./env";
-import axios from "axios";
 
 function HomePage() {
   return <h2>Home</h2>;
@@ -20,7 +19,6 @@ function AboutPage() {
 const ChildApp = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [imageURL, setImageURL] = useState("");
 
   useEffect(() => {
     const receiveMessageFromParent = (event) => {
@@ -51,21 +49,6 @@ const ChildApp = () => {
     window.parent.postMessage(data, PARENT_ORIGIN);
   };
 
-  useEffect(() => {
-    axios
-      .get("https://nachos.riskwisepro.io/1.png", { responseType: "blob" })
-      .then((response) => {
-        const reader = new window.FileReader();
-        reader.readAsDataURL(response.data);
-        reader.onload = () => {
-          setImageURL(reader.result);
-        };
-      })
-      .catch((error) => {
-        console.error("Error fetching image:", error);
-      });
-  }, []);
-
   return (
     <div className="App">
       <nav>
@@ -94,9 +77,6 @@ const ChildApp = () => {
           <button onClick={sendDataToParent}>Send Data to Parent</button>
         </div>
       </main>
-      <section>
-        <div>{imageURL && <img src={imageURL} alt="Image" />}</div>
-      </section>
     </div>
   );
 };
